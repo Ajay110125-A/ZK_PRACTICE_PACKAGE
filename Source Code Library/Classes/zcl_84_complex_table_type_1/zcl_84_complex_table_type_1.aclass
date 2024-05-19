@@ -1,0 +1,79 @@
+CLASS zcl_84_complex_table_type_1 DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
+
+  PUBLIC SECTION.
+
+    INTERFACES if_oo_adt_classrun .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+ENDCLASS.
+
+
+
+CLASS ZCL_84_COMPLEX_TABLE_TYPE_1 IMPLEMENTATION.
+
+
+  METHOD if_oo_adt_classrun~main.
+
+    TYPES : BEGIN OF st_connection,
+              carrier_id      TYPE /dmo/carrier_id,
+              connection_id   TYPE /dmo/connection_id,
+              airport_from_id TYPE /dmo/airport_from_id,
+              airport_to_id   TYPE /dmo/airport_to_id,
+              carrier_name    TYPE /dmo/carrier_name,
+            END OF st_connection.
+
+* Example 1 : Simple and Complex Internal Table
+**********************************************************************
+    "Simple Table( Scaler row type )
+    DATA number TYPE i.
+    "Complex table ( Structure row type )
+    DATA connection TYPE TABLE OF st_connection.
+
+    out->write(  `--------------------------------------------` ).
+    out->write(  `Example 1: Simple and Complex Internal Table` ).
+    out->write( data = number name = 'Simple Table NUMBERS:' ).
+
+    out->write( data = connection name = 'Complex Table CONNECTIONS:' ).
+
+
+* Example 2 : Complex Internal Tables
+**********************************************************************
+
+    "Standard Table with non-unique key ( short form )
+    DATA connections_1 TYPE TABLE OF st_connection.
+
+    "Standard Table with non-unique key ( explicit form )
+    DATA connection_2 TYPE STANDARD TABLE OF st_connection WITH NON-UNIQUE DEFAULT KEY.
+
+    "Sorted Table with Non-unique explicit Key
+    DATA connection_3 TYPE SORTED TABLE OF st_connection WITH NON-UNIQUE KEY airport_from_id
+                                                                             airport_to_id.
+
+    "Sorted Hashed Table with Unique explicit Key
+    DATA connection_4 TYPE HASHED TABLE OF st_connection WITH UNIQUE KEY airport_from_id
+                                                                         airport_to_id.
+
+
+* Example 3 : Local Table Type
+**********************************************************************
+    TYPES tt_connections TYPE SORTED TABLE OF st_connection
+                         WITH UNIQUE KEY carrier_id
+                                         connection_id.
+
+    DATA connection_5 TYPE tt_connections.
+
+
+* Example 4 : Global Table Type
+**********************************************************************
+
+    DATA flight TYPE /dmo/flight.
+
+    out->write(  `------------------------------------------` ).
+    out->write(  `Example 4: Global Table TYpe /DMO/T_FLIGHT` ).
+    out->write( data = flight name = 'Internal Table Flights' ).
+
+  ENDMETHOD.
+ENDCLASS.
