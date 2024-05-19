@@ -1,0 +1,102 @@
+CLASS zcl_84_type_conversion_demo DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
+
+  PUBLIC SECTION.
+
+    INTERFACES if_oo_adt_classrun .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+ENDCLASS.
+
+
+
+CLASS ZCL_84_TYPE_CONVERSION_DEMO IMPLEMENTATION.
+
+
+  METHOD if_oo_adt_classrun~main.
+
+    DATA: var_string TYPE string,
+          var_int    TYPE i,
+          var_date   TYPE d.
+*          var_pack TYPE p LENGTH 3 DECIMALS 2.
+
+    var_string = '12345'.
+    var_int = var_string.
+
+    out->write(
+      EXPORTING
+        data   = |Conversion successful|
+*        name   =
+*      RECEIVING
+*        output =
+    ).
+
+    var_string = '20231213'.
+    var_date = var_string.
+
+    out->write( |String value : { var_string }| ).
+    out->write( |Date value : { var_date DATE = USER }| ).
+
+    DATA(sys_date) = cl_abap_context_info=>get_system_date( ).
+
+    out->write( |System date : { sys_date DATE = USER }| ).
+
+
+*   Truncation and Rounding
+    out->write( |*******************************| ).
+    out->write( |Truncation and Rounding| ).
+    out->write( |*******************************| ).
+
+    DATA long_char TYPE c LENGTH 10 VALUE 'ABCDEFGHIJ'.
+    DATA short_char TYPE c LENGTH 5.
+
+    short_char = long_char.
+
+    out->write( |Long Char : { long_char }| ).
+    out->write( |Short Char : { short_char }| ).
+
+    DATA result TYPE p LENGTH 3 DECIMALS 2.
+
+    result = 1 / 8.
+
+    out->write( |1/8 is rounded to { result }| ).
+
+    out->write( |1/8 is rounded to { result NUMBER = USER }| ).
+
+    out->write( |*******************************| ).
+    out->write( |Unexpected result of assignment| ).
+    out->write( |*******************************| ).
+
+    CLEAR : var_date, var_string, var_int.
+    DATA var_n TYPE n LENGTH 4.
+
+    var_date = cl_abap_context_info=>get_system_date( ).
+
+    var_int = var_date.
+
+    out->write( |Date converted to days from 01.01.0001 : { var_int }| ).
+
+    var_string = '2RDD'.
+
+    var_n = var_string.
+
+    out->write( |Numberic type removes any char and take only numbers : { var_string } -> { var_n }| ).
+
+    var_date = 'ABCDEFGH'.
+
+    out->write( |Invalid Date : { var_date }| ).
+
+
+    out->write( |*******************************| ).
+    out->write( |Conversions of Forced Types| ).
+    out->write( |*******************************| ).
+
+    DATA(result1) = '20231123'.
+    out->write( |Date value without explicit conversion : { result1 }| ).
+    DATA(result2) = CONV d( '20231123' ).
+    out->write( |Date value with explicit conversion : { result2 DATE = USER }| ).
+
+  ENDMETHOD.
+ENDCLASS.
