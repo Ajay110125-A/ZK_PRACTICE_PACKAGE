@@ -1,0 +1,43 @@
+CLASS zcl_84_unit_test_1 DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
+
+  PUBLIC SECTION.
+
+    INTERFACES if_oo_adt_classrun .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+ENDCLASS.
+
+
+
+CLASS ZCL_84_UNIT_TEST_1 IMPLEMENTATION.
+
+
+  METHOD if_oo_adt_classrun~main.
+
+*    DATA(carrier) = lcl_data=>4
+*    cl_abap_unit_assert=>fail(
+**      msg    =
+**      level  = if_abap_unit_constant=>severity-medium
+**      quit   = if_abap_unit_constant=>quit-test
+**      detail =
+*    ).
+
+    DATA l_carrier_id TYPE /dmo/carrier_id VALUE 'AA'.
+
+    TRY.
+
+        DATA(carrier_info) = lcl_carrier_info=>get_carrier( i_carrier_id = l_carrier_id ).
+        out->write(
+          EXPORTING
+            data   = carrier_info
+        ).
+
+      CATCH cx_abap_invalid_value.
+        out->write( |Carrier { l_carrier_id } does not exist | ).
+    ENDTRY.
+
+  ENDMETHOD.
+ENDCLASS.

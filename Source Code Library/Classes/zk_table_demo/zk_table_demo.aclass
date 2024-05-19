@@ -1,0 +1,94 @@
+CLASS zk_table_demo DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
+
+  PUBLIC SECTION.
+
+    INTERFACES if_oo_adt_classrun .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+ENDCLASS.
+
+
+
+CLASS ZK_TABLE_DEMO IMPLEMENTATION.
+
+
+  METHOD if_oo_adt_classrun~main.
+
+
+*    SELECT *
+*        FROM /dmo/connection
+*        INTO TABLE @DATA(li_connection).
+*
+*    out->write( li_connection ).
+
+
+*    MODIFY zkflightdetail FROM TABLE @li_connection.
+    DATA : t_flight TYPE /dmo/t_flight.
+
+    SELECT SINGLE
+        FROM zkflightdetail
+        FIELDS airport_from_id
+        WHERE carrier_id = 'LH'
+        AND   connection_id = '0400'
+        INTO @DATA(airport_from_id).
+
+    IF sy-subrc EQ 0.
+      out->write( '________' ).
+      out->write( 'Example : 1' ).
+      out->write( |Flight LH 0400 departed from { airport_from_id }| ).
+      CLEAR : airport_from_id.
+    ENDIF.
+
+    SELECT SINGLE
+        FROM zkflightdetail
+        FIELDS airport_from_id, airport_to_id
+        WHERE carrier_id = 'LH'
+        AND   connection_id = '0400'
+        INTO (  @airport_from_id, @DATA(airport_to_id) ).
+
+    IF sy-subrc EQ 0.
+      out->write( '________' ).
+      out->write( 'Example : 2' ).
+      out->write( |Flight LH 0400 departed from { airport_from_id } TO { airport_to_id }| ).
+    ENDIF.
+
+    SELECT SINGLE *
+        FROM zkflightdetail
+        WHERE carrier_id = 'XX'
+        AND   connection_id = '0400'
+        INTO @DATA(lwa_flight_details).
+
+    IF sy-subrc EQ 0.
+      out->write( `----------`  ).
+      out->write( `Example 3:`  ).
+      out->write( |Flight XX 0400 departs from {  lwa_flight_details-airport_from_id }.| ).
+
+    ELSE.
+      out->write( `----------`  ).
+      out->write( `Example 3:`  ).
+      out->write( |There is no flight XX 0400, but still airport_from_id = {  lwa_flight_details-airport_from_id }!| ).
+
+    ENDIF.
+
+
+*   Getting data from CDS views
+
+    SELECT SINGLE
+        FROM /DMO/I_Connection
+        FIELDS DepartureAirport, DestinationAirport, \_Airline-Name
+        WHERE AirlineID = 'LH'
+        AND   ConnectionID = '0400'
+        INTO ( @airport_from_id, @airport_to_id, @DATA(carrier_name) ).
+
+    IF sy-subrc EQ 0.
+      out->write( '__________' ).
+      out->write( 'Getting data from CDS view' ).
+      out->write( |Flight LH 0400 departed from { airport_from_id } TO { airport_to_id } with Carrier Name : { carrier_name }| ).
+    ENDIF.
+
+
+  ENDMETHOD.
+ENDCLASS.

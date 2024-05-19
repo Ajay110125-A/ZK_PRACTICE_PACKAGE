@@ -1,0 +1,43 @@
+CLASS zk_84_eml_demo DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
+
+  PUBLIC SECTION.
+
+    INTERFACES if_oo_adt_classrun .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+ENDCLASS.
+
+
+
+CLASS ZK_84_EML_DEMO IMPLEMENTATION.
+
+
+  METHOD if_oo_adt_classrun~main.
+
+    DATA : update_data TYPE TABLE FOR UPDATE /DMO/R_AgencyTP.
+
+    SELECT
+        FROM /DMO/I_Agency
+        FIELDS AgencyID, Name
+        INTO TABLE @DATA(li_agency) UP TO 10 ROWS.
+
+    update_data = VALUE #( FOR wa_agency IN li_agency
+                            (  AgencyID = wa_agency-AgencyID
+                               Name     = |Modified { wa_agency-Name }|
+                             )
+                          ).
+
+    MODIFY ENTITIES OF /DMO/R_AgencyTP
+    ENTITY /DMO/Agency
+    UPDATE FIELDS ( Name )
+    WITH update_data.
+
+    COMMIT ENTITIES.
+
+
+
+  ENDMETHOD.
+ENDCLASS.

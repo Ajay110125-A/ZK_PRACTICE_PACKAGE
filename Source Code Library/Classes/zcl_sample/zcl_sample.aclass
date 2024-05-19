@@ -1,0 +1,58 @@
+CLASS zcl_sample DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
+
+  PUBLIC SECTION.
+
+    INTERFACES if_oo_adt_classrun .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+ENDCLASS.
+
+
+
+CLASS ZCL_SAMPLE IMPLEMENTATION.
+
+
+  METHOD if_oo_adt_classrun~main.
+
+    DATA: gv_target1 TYPE d.
+    CONSTANTS: geo_date1 TYPE d VALUE '20331233'.
+    gv_target1 = EXACT #( geo_date1 ).
+    out->write( gv_target1 ).
+
+*    DATA: gv_target2 TYPE c LENGTH 5. "Runtime Error
+*    CONSTANTS: geo_string TYPE string VALUE '0123456789ABCDEF'.
+*    gv_target2 = EXACT #( geo_string+5(6) ).
+*
+*    out->write( gv_target2 ).
+
+    DATA: gv_target3 TYPE p DECIMALS 3.
+    CONSTANTS: gco_int1 TYPE i VALUE 2.
+    gv_target3 = EXACT #( 2 / gco_int1 ).
+    out->write( gv_target3 ).
+
+    DATA: gv_target4 TYPE string.
+    CONSTANTS: gco_string TYPE c LENGTH 16 VALUE '0123456789ABCDEF'.
+    gv_target4 = EXACT #( gco_string+5(5) ).
+    out->write( gv_target4 ).
+
+*    DATA: gv_target TYPE p DECIMALS 2. "Runtime Error
+*    CONSTANTS: go_int1 TYPE i VALUE 3.
+*    gv_target = EXACT #( 2 / go_int1 ).
+*    out->write( gv_target ).
+
+    DATA(result1) = count_any_of( val = 'This a sample text string' sub = 'is' ) .
+    DATA(result2) = count( val = 'ABAP ABAP abap' sub = 'AB' ).
+    DATA(result3) = find_any_of( val = 'ABAP ABAP abap' sub = 'AB' ).
+    DATA(result4) = find_any_not_of( val = 'ABAP ABAP abap' sub = 'AB' ).
+
+    out->write( result1 ).
+
+
+
+
+
+  ENDMETHOD.
+ENDCLASS.
